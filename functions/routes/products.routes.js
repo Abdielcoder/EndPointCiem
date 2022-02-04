@@ -7,7 +7,7 @@ const db = admin.firestore();
 const TIKE = admin.firestore;
 
 //Create
-router.post("/api/ciem", async (req, res) => {
+router.post("/api/ciem/", async (req, res) => {
   try {
     await db
       .collection("Drivers")
@@ -31,6 +31,23 @@ router.get("/api/ciem/:driver_id", (req, res) => {
       return res.status(500).send(error);
     }
   })();
+});
+
+router.get("/api/ciem", async (req, res) => {
+  try {
+    let query = db.collection("Drivers");
+    const querySnapshot = await query.get();
+    let docs = querySnapshot.docs;
+
+    const response = docs.map((doc) => ({
+      userId: doc.id,
+      userName: doc.data().username,
+    }));
+
+    return res.status(200).json(response);
+  } catch (error) {
+    return res.status(500).json(error);
+  }
 });
 
 // //Consulta de la direccion del restaurante por Place uid.
